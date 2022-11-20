@@ -2,6 +2,7 @@
 include 'db.php';
 include 'head.php';
 include 'header.php';
+include "sessions.php";
 //  include 'admin/sidebar.php';
 if ($_SESSION['loggedinuserrole'] == "User") {
     header('Location: ../index.php');

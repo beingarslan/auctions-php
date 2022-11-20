@@ -6,6 +6,4 @@
 		if ($db->query($query)) {
       echo "Successfully Deleted";		}
 	}
-	
-
-	?>
+?>

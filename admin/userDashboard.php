@@ -2,7 +2,9 @@
 include '../admin/head.php';
 include '../admin/header.php';
 include '../admin/sidebar.php';
-if($_SESSION['loggedinuserrole']=="User") {
+include '../sessions_admin.php';
+
+if ($_SESSION['loggedinuserrole'] == "User") {
     header('Location: ../index.php');
     die();
 }
@@ -30,14 +32,14 @@ if (isset($_SESSION['role']) == 'Admin') {
                                 </h1>
                             </div>
                             <div class="col-12 col-xl-auto mt-4">
-                              
+
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
             <!-- Main page content-->
-            
+
         </main>
         <?php
         include '../admin/footer.php';

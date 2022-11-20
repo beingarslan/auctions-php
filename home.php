@@ -1,5 +1,6 @@
 <?php
 include "db.php";
+include "sessions.php";
 ?>
 
 
@@ -35,7 +36,7 @@ function getCategoryName($id)
 
 <body>
 	<header>
-		<h1 ><span class="i">i</span><span class="b">b</span><span class="u">u</span><span class="y">y</span></h1>
+		<h1><span class="i">i</span><span class="b">b</span><span class="u">u</span><span class="y">y</span></h1>
 
 		<form action="#">
 			<input type="text" name="search" placeholder="Search for anything" />
@@ -62,7 +63,7 @@ function getCategoryName($id)
 				$result
 			)) {
 			?>
-				<li><a class="categoryLink" href="index.php?category_id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></li>
+				<li><a class="categoryLink" href="home.php?category_id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></li>
 			<?php
 			}
 			?>
@@ -92,7 +93,7 @@ function getCategoryName($id)
 						?>
 							<li class="list-group
                                         -item">
-								<a href="index.php?category_id=<?php echo $row['id']; ?>">
+								<a href="home.php?category_id=<?php echo $row['id']; ?>">
 									<?php echo $row['name']; ?>
 								</a>
 							</li>
@@ -104,7 +105,7 @@ function getCategoryName($id)
 			</div>
 		</div>
 
-		
+
 		<ul class="productList">
 			<?php
 			if (isset($_GET['category_id'])) {
@@ -120,9 +121,9 @@ function getCategoryName($id)
 				<li>
 					<img src="product.png" alt="product name">
 					<article>
-						<h2><?php echo $row['name']?></h2>
-						<h3><?php echo getCategoryName($row["category_id"])?></h3>
-						<p><?php echo $row['description']?></p>
+						<h2><?php echo $row['name'] ?></h2>
+						<h3><?php echo getCategoryName($row["category_id"]) ?></h3>
+						<p><?php echo $row['description'] ?></p>
 						<!-- if is_auction -->
 						<?php if ($row['is_auction']) { ?>
 							<!-- get auction -->
@@ -132,13 +133,13 @@ function getCategoryName($id)
 							$auction = mysqli_fetch_assoc($auctionResult);
 							?>
 							<!-- if auction is active -->
-							<p class="price">Current bid: £<?php echo $auction['price']?></p>
-							<p class="time">Ends in: <?php echo $auction['end_time']?></p>
-							<?php
+							<p class="price">Current bid: £<?php echo $auction['price'] ?></p>
+							<p class="time">Ends in: <?php echo $auction['end_time'] ?></p>
+						<?php
 							// if auction is not active
-							} else {
-							?>
-						<p class="price">Price: £<?php echo $row['price']?></p>
+						} else {
+						?>
+							<p class="price">Price: £<?php echo $row['price'] ?></p>
 						<?php
 						}
 						?>
@@ -151,7 +152,7 @@ function getCategoryName($id)
 							<a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a>
 							<a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete</a>
 						<?php } ?>
-						<a href="productDetail.php?id='<?php echo $row['id']?>'" class="more auctionLink">More &gt;&gt;</a>
+						<a href="productDetail.php?id=<?php echo $row['id'] ?>" class="more auctionLink">More &gt;&gt;</a>
 					</article>
 				</li>
 			<?php
@@ -159,7 +160,7 @@ function getCategoryName($id)
 			?>
 		</ul>
 
-		
+
 
 		<footer>
 			&copy; ibuy 2019

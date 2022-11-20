@@ -1,5 +1,6 @@
 <?php
 include "db.php";
+include "sessions.php";
 ?>
 
 <!-- // get all products  -->

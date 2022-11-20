@@ -40,10 +40,19 @@ if (isset($_POST['loginAttempt'])) {
             $_SESSION['loggedinuseremail'] = $email;
             $_SESSION['loggedinuserid'] = $row['id'];
             $_SESSION['loggedinuserrole'] = $userrole;
+            echo ($userrole);
+            die();
+            if ($userrole != "Admin") {
+                echo ($userrole);
+                die();
+                header("location: home.php");
+            } else {
+                header("location: admin/dashboard.php");
+            }
 
 
 
-            header("location: admin/dashboard.php");
+            // header("location: admin/dashboard.php");
 
             //unset($_SESSION['error_accour']);
         } else {
