@@ -3,11 +3,9 @@ include '../admin/head.php';
 include '../admin/header.php';
 include '../admin/sidebar.php';
 include '../db.php';
+include '../sessions_admin.php';
 
-if ($_SESSION['loggedinuserrole'] == "User") {
-    header('Location: ../index.php');
-    die();
-}
+
 $data = $_POST;
 if (isset($_POST['save'])) {
     // $Pieces = $_POST['Pieces'];
@@ -67,12 +65,12 @@ if (isset($_POST['save'])) {
                                         <tr>
                                             <th>Name</th>
                                             <th>Description</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                         <tr>
                                             <td><input type="text" name="Name[]" placeholder="Name" class="form-control" /></td>
                                             <td><input type="text" name="Description[]" placeholder="Description" class="form-control" /></td>
-                                            <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
+                                            <!-- <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td> -->
                                         </tr>
                                     </table>
 

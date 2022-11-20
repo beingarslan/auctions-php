@@ -1,5 +1,6 @@
 <?php
 include '../db.php';
+include '../sessions_admin.php';
 
 // get category name from category id
 function getCategoryName($id)

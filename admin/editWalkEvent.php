@@ -5,6 +5,8 @@ include '../admin/head.php';
 include '../admin/header.php';
 include '../admin/sidebar.php';
 include '../db.php';
+include '../sessions_admin.php';
+
 if ($_SESSION['loggedinuserrole'] == "User") {
     header('Location: ../index.php');
     die();
