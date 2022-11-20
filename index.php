@@ -7,21 +7,21 @@ include "head.php";
 <?php
 //sign in
 if (isset($_POST['loginAttempt'])) {
-   
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = mysqli_real_escape_string($db, $_POST['inputEmailAddress']);
         $password = mysqli_real_escape_string($db, $_POST['inputPassword']);
-        
+
         $sql = "SELECT * FROM users WHERE  email = '$email' AND password = '$password'";
-        
+
         $result = mysqli_query($db, $sql);
-       
+
         $row = mysqli_fetch_array($result);
         $count = mysqli_num_rows($result);
 
         if ($count == 1) {
-        
-            if($row['status']!="Active"){
+
+            if ($row['status'] != "Active") {
                 echo "<script>
                 setTimeout(function() {
                     alert('You are not active, please contact admin');
@@ -29,33 +29,34 @@ if (isset($_POST['loginAttempt'])) {
 
                 }, 1000);
                 </script>";
-               
+
                 exit();
             }
-                $userrole =  $row['role'];
-                $_SESSION['loggedinusername']= $row['full_name'];
-                $_SESSION['loggedinuseremail'] = $email;
-                $_SESSION['loggedinuserid'] = $row['id'];
-                $_SESSION['loggedinuserrole'] = $userrole;
-              
+            $userrole =  $row['role'];
+            $_SESSION['loggedinusername'] = $row['full_name'];
+            $_SESSION['loggedinuseremail'] = $email;
+            $_SESSION['loggedinuserid'] = $row['id'];
+            $_SESSION['loggedinuserrole'] = $userrole;
 
-               
-                   header("location: admin/dashboard.php");
-                
-                //unset($_SESSION['error_accour']);
-            }else{
-                echo "<script>
+            if ($userrole != "Admin") {
+                header("location: home.php");
+            } else {
+                header("location: admin/dashboard.php");
+            }
+            //unset($_SESSION['error_accour']);
+        } else {
+            echo "<script>
                 setTimeout(function() {
                     alert('Wrong email or password');
                     location.href = 'index.php';
 
                 }, 1000);
                 </script>";
-               
-                exit();
-            }
+
+            exit();
         }
-    } 
+    }
+}
 
 ?>
 
@@ -68,12 +69,12 @@ if (isset($_POST['loginAttempt'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
-    body {
-        background-image: url("public/images/hero_image2.jpg");
-    }
+        body {
+            background-image: url("public/images/hero_image2.jpg");
+        }
     </style>
     <?php
-   
+
     include 'header.php';
     ?>
 </head>
@@ -99,19 +100,15 @@ if (isset($_POST['loginAttempt'])) {
                                     <!-- Form Group (email address)-->
                                     <div class="mb-3">
                                         <label class="small mb-1" for="inputEmailAddress">Email</label>
-                                        <input class="form-control" name="inputEmailAddress" type="email"
-                                            placeholder="Enter email address" />
+                                        <input class="form-control" name="inputEmailAddress" type="email" placeholder="Enter email address" />
                                     </div>
                                     <!-- Form Group (password)-->
                                     <div class="mb-3">
                                         <label class="small mb-1" for="inputPassword">Password</label>
-                                        <input class="form-control" name="inputPassword" type="password"
-                                            placeholder="Enter password" />
+                                        <input class="form-control" name="inputPassword" type="password" placeholder="Enter password" />
                                     </div>
-                                    <div style="float: right;"
-                                        class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                        <input class="btn btn-primary" value="Login" type="submit"
-                                            name="loginAttempt" />
+                                    <div style="float: right;" class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                        <input class="btn btn-primary" value="Login" type="submit" name="loginAttempt" />
                                     </div>
                                 </form>
                             </div>
