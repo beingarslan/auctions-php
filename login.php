@@ -4,6 +4,7 @@ include "db.php";
 include 'head.php';
 ?>
 
+
 <?php
 //sign in
 if (isset($_POST['loginAttempt'])) {
@@ -32,6 +33,8 @@ if (isset($_POST['loginAttempt'])) {
 
                 exit();
             }
+            // start session
+            session_start();
             $userrole =  $row['role'];
             $_SESSION['loggedinusername'] = $row['name'];
             $_SESSION['loggedinuseremail'] = $email;

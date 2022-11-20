@@ -1,132 +1,170 @@
+<?php
+include "db.php";
+?>
+
+
+<!-- // get all products  -->
+<?php
+$query = "SELECT * FROM products";
+$result = mysqli_query($db, $query);
+?>
+<!-- // get all categories -->
+<?php
+$query = "SELECT * FROM categories";
+$result = mysqli_query($db, $query);
+?>
+
+<?php
+function getCategoryName($id)
+{
+	global $db;
+	$query = "SELECT * FROM categories WHERE id = $id";
+	$result = mysqli_query($db, $query);
+	$category = mysqli_fetch_assoc($result);
+	return $category['name'];
+}
+?>
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>ibuy Auctions</title>
-		<link rel="stylesheet" href="ibuy.css" />
-	</head>
 
-	<body>
-		<header>
-			<h1><span class="i">i</span><span class="b">b</span><span class="u">u</span><span class="y">y</span></h1>
+<head>
+	<title>ibuy Auctions</title>
+	<link rel="stylesheet" href="ibuy.css" />
+</head>
 
-			<form action="#">
-				<input type="text" name="search" placeholder="Search for anything" />
-				<input type="submit" name="submit" value="Search" />
-			</form>
-		</header>
+<body>
+	<header>
+		<h1 ><span class="i">i</span><span class="b">b</span><span class="u">u</span><span class="y">y</span></h1>
 
-		<nav>
-			<ul>
-				<li><a class="categoryLink" href="#">Home &amp; Garden</a></li>
-				<li><a class="categoryLink" href="#">Electronics</a></li>
-				<li><a class="categoryLink" href="#">Fashion</a></li>
-				<li><a class="categoryLink" href="#">Sport</a></li>
-				<li><a class="categoryLink" href="#">Health</a></li>
-				<li><a class="categoryLink" href="#">Toys</a></li>
-				<li><a class="categoryLink" href="#">Motors</a></li>
-				<li><a class="categoryLink" href="#">More</a></li>
-			</ul>
-		</nav>
-		<img src="banners/1.jpg" alt="Banner" />
+		<form action="#">
+			<input type="text" name="search" placeholder="Search for anything" />
+			<input type="submit" name="submit" value="Search" />
+		</form>
+	</header>
 
-		<main>
+	<nav>
+		<!-- //show all products -->
+		<?php
+		$query = "SELECT * FROM products";
+		$result = mysqli_query($db, $query);
+		?>
+		<!-- //show all categories -->
+		<?php
+		$query = "SELECT * FROM categories";
+		$result = mysqli_query($db, $query);
+		?>
+		<ul>
+			<!-- display categories -->
 
-			<h1>Latest Listings / Search Results / Category listing</h1>
+			<?php
+			while ($row = mysqli_fetch_assoc(
+				$result
+			)) {
+			?>
+				<li><a class="categoryLink" href="index.php?category_id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></li>
+			<?php
+			}
+			?>
 
-			<ul class="productList">
+
+
+
+		</ul>
+	</nav>
+	<img src="banners/1.jpg" alt="Banner" />
+
+	<main>
+
+		<!-- Product Listing -->
+		<div class="col-md-3">
+			<div class="card">
+				<div class="card-header">
+					<h3>Products</h3>
+				</div>
+				<div class="card-body">
+					<ul class="list-group
+                                list-group-flush">
+						<?php
+						while ($row = mysqli_fetch_assoc(
+							$result
+						)) {
+						?>
+							<li class="list-group
+                                        -item">
+								<a href="index.php?category_id=<?php echo $row['id']; ?>">
+									<?php echo $row['name']; ?>
+								</a>
+							</li>
+						<?php
+						}
+						?>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		
+		<ul class="productList">
+			<?php
+			if (isset($_GET['category_id'])) {
+				$query = "SELECT * FROM products WHERE category_id = " . $_GET['category_id'];
+			} else {
+				$query = "SELECT * FROM products";
+			}
+			$result = mysqli_query($db, $query);
+			while ($row = mysqli_fetch_assoc(
+				$result
+			)) {
+			?>
 				<li>
 					<img src="product.png" alt="product name">
 					<article>
-						<h2>Product name</h2>
-						<h3>Product category</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sodales ornare purus, non laoreet dolor sagittis id. Vestibulum lobortis laoreet nibh, eu luctus purus volutpat sit amet. Proin nec iaculis nulla. Vivamus nec tempus quam, sed dapibus massa. Etiam metus nunc, cursus vitae ex nec, scelerisque dapibus eros. Donec ac diam a ipsum accumsan aliquet non quis orci. Etiam in sapien non erat dapibus rhoncus porta at lorem. Suspendisse est urna, egestas ut purus quis, facilisis porta tellus. Pellentesque luctus dolor ut quam luctus, nec porttitor risus dictum. Aliquam sed arcu vehicula, tempor velit consectetur, feugiat mauris. Sed non pellentesque quam. Integer in tempus enim.</p>
-
-						<p class="price">Current bid: £123.45</p>
-						<a href="#" class="more auctionLink">More &gt;&gt;</a>
+						<h2><?php echo $row['name']?></h2>
+						<h3><?php echo getCategoryName($row["category_id"])?></h3>
+						<p><?php echo $row['description']?></p>
+						<!-- if is_auction -->
+						<?php if ($row['is_auction']) { ?>
+							<!-- get auction -->
+							<?php
+							$query = "SELECT * FROM auctions WHERE product_id = " . $row['id'];
+							$auctionResult = mysqli_query($db, $query);
+							$auction = mysqli_fetch_assoc($auctionResult);
+							?>
+							<!-- if auction is active -->
+							<p class="price">Current bid: £<?php echo $auction['price']?></p>
+							<p class="time">Ends in: <?php echo $auction['end_time']?></p>
+							<?php
+							// if auction is not active
+							} else {
+							?>
+						<p class="price">Price: £<?php echo $row['price']?></p>
+						<?php
+						}
+						?>
+						<!-- check if my product -->
+						<?php if ($row['user_id'] == $_SESSION['user_id']) { ?>
+							<!-- create auction -->
+							<?php if (!$row['is_auction']) { ?>
+								<a href="create_auction.php?product_id=<?php echo $row['id']; ?>">Create Auction</a>
+							<?php } ?>
+							<a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a>
+							<a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete</a>
+						<?php } ?>
+						<a href="productDetail.php?id='<?php echo $row['id']?>'" class="more auctionLink">More &gt;&gt;</a>
 					</article>
 				</li>
-				<li>
-					<img src="product.png" alt="product name">
-					<article>
-						<h2>Product name</h2>
-						<h3>Product category</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sodales ornare purus, non laoreet dolor sagittis id. Vestibulum lobortis laoreet nibh, eu luctus purus volutpat sit amet. Proin nec iaculis nulla. Vivamus nec tempus quam, sed dapibus massa. Etiam metus nunc, cursus vitae ex nec, scelerisque dapibus eros. Donec ac diam a ipsum accumsan aliquet non quis orci. Etiam in sapien non erat dapibus rhoncus porta at lorem. Suspendisse est urna, egestas ut purus quis, facilisis porta tellus. Pellentesque luctus dolor ut quam luctus, nec porttitor risus dictum. Aliquam sed arcu vehicula, tempor velit consectetur, feugiat mauris. Sed non pellentesque quam. Integer in tempus enim.</p>
+			<?php
+			}
+			?>
+		</ul>
 
-						<p class="price">Current bid: £123.45</p>
-						<a href="#" class="more auctionLink">More &gt;&gt;</a>
-					</article>
-				</li>
-				<li>
-					<img src="product.png" alt="product name">
-					<article>
-						<h2>Product name</h2>
-						<h3>Product category</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sodales ornare purus, non laoreet dolor sagittis id. Vestibulum lobortis laoreet nibh, eu luctus purus volutpat sit amet. Proin nec iaculis nulla. Vivamus nec tempus quam, sed dapibus massa. Etiam metus nunc, cursus vitae ex nec, scelerisque dapibus eros. Donec ac diam a ipsum accumsan aliquet non quis orci. Etiam in sapien non erat dapibus rhoncus porta at lorem. Suspendisse est urna, egestas ut purus quis, facilisis porta tellus. Pellentesque luctus dolor ut quam luctus, nec porttitor risus dictum. Aliquam sed arcu vehicula, tempor velit consectetur, feugiat mauris. Sed non pellentesque quam. Integer in tempus enim.</p>
+		
 
-						<p class="price">Current bid: £123.45</p>
-						<a href="#" class="more auctionLink">More &gt;&gt;</a>
-					</article>
-				</li>
-			</ul>
+		<footer>
+			&copy; ibuy 2019
+		</footer>
+	</main>
+</body>
 
-			<hr />
-
-			<h1>Product Page</h1>
-			<article class="product">
-
-					<img src="product.png" alt="product name">
-					<section class="details">
-						<h2>Product name</h2>
-						<h3>Product category</h3>
-						<p>Auction created by <a href="#">User.Name</a></p>
-						<p class="price">Current bid: £123.45</p>
-						<time>Time left: 8 hours 3 minutes</time>
-						<form action="#" class="bid">
-							<input type="text" name="bid" placeholder="Enter bid amount" />
-							<input type="submit" value="Place bid" />
-						</form>
-					</section>
-					<section class="description">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sodales ornare purus, non laoreet dolor sagittis id. Vestibulum lobortis laoreet nibh, eu luctus purus volutpat sit amet. Proin nec iaculis nulla. Vivamus nec tempus quam, sed dapibus massa. Etiam metus nunc, cursus vitae ex nec, scelerisque dapibus eros. Donec ac diam a ipsum accumsan aliquet non quis orci. Etiam in sapien non erat dapibus rhoncus porta at lorem. Suspendisse est urna, egestas ut purus quis, facilisis porta tellus. Pellentesque luctus dolor ut quam luctus, nec porttitor risus dictum. Aliquam sed arcu vehicula, tempor velit consectetur, feugiat mauris. Sed non pellentesque quam. Integer in tempus enim.</p>
-
-
-					</section>
-
-					<section class="reviews">
-						<h2>Reviews of User.Name </h2>
-						<ul>
-							<li><strong>Ali said </strong> great ibuyer! Product as advertised and delivery was quick <em>29/09/2019</em></li>
-							<li><strong>Dave said </strong> disappointing, product was slightly damaged and arrived slowly.<em>22/07/2019</em></li>
-							<li><strong>Susan said </strong> great value but the delivery was slow <em>22/07/2019</em></li>
-
-						</ul>
-
-						<form>
-							<label>Add your review</label> <textarea name="reviewtext"></textarea>
-
-							<input type="submit" name="submit" value="Add Review" />
-						</form>
-					</section>
-					</article>
-
-					<hr />
-					<h1>Sample Form</h1>
-
-					<form action="#">
-						<label>Text box</label> <input type="text" />
-						<label>Another Text box</label> <input type="text" />
-						<input type="checkbox" /> <label>Checkbox</label>
-						<input type="radio" /> <label>Radio</label>
-						<input type="submit" value="Submit" />
-
-					</form>
-
-
-
-			<footer>
-				&copy; ibuy 2019
-			</footer>
-		</main>
-	</body>
 </html>

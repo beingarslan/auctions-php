@@ -1,165 +1,195 @@
 <?php
-include 'db.php';
-include 'head.php';
-include 'header.php';
-//  include 'admin/sidebar.php';
-if ($_SESSION['loggedinuserrole'] == "User") {
-    header('Location: ../index.php');
-    die();
-}
-
+include "db.php";
 ?>
+
+<!-- // get all products  -->
+<?php
+$query = "SELECT * FROM products";
+$result = mysqli_query($db, $query);
+?>
+<!-- // get all categories -->
+<?php
+$query = "SELECT * FROM categories";
+$result = mysqli_query($db, $query);
+?>
+<!-- get category name from id -->
+<?php
+function getCategoryName($id)
+{
+	global $db;
+	$query = "SELECT * FROM categories WHERE id = $id";
+	$result = mysqli_query($db, $query);
+	$category = mysqli_fetch_assoc($result);
+	return $category['name'];
+}
+?>
+<!-- get user name from id -->
+<?php
+function getUserName($id)
+{
+	global $db;
+	$query = "SELECT * FROM users WHERE id = $id";
+	$result = mysqli_query($db, $query);
+	$user = mysqli_fetch_assoc($result);
+	return $user['name'];
+}
+?>
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <style>
-        body {
-            background-image: url("public/images/hero_image2.jpg");
-        }
-    </style>
+	<title>ibuy Auctions</title>
+	<link rel="stylesheet" href="ibuy.css" />
 </head>
 
-
 <body>
+	<header>
+		<h1 ><span class="i">i</span><span class="b">b</span><span class="u">u</span><span class="y">y</span></h1>
 
-    <div class="d-flex flex-column h-100">
+		<form action="#">
+			<input type="text" name="search" placeholder="Search for anything" />
+			<input type="submit" name="submit" value="Search" />
+		</form>
+	</header>
 
-        <main>
+	<nav>
+		<!-- //show all products -->
+		<?php
+		$query = "SELECT * FROM products";
+		$result = mysqli_query($db, $query);
+		?>
+		<!-- //show all categories -->
+		<?php
+		$query = "SELECT * FROM categories";
+		$result = mysqli_query($db, $query);
+		?>
+		<ul>
+			<!-- display categories -->
 
-
-            <div class="container-xl px-12 mt-12">
-                <!-- Account page navigation-->
-
-
-                <div style="justify-content: center;margin-top: 20px" class="row">
-
-                    <div class="col-xl-10">
-                        <!-- Account details card-->
-                        <div class="card mb-4">
-                            <div class="card-header">Product Details</div>
-                            <div class="card-body">
-                                <form>
-                                    <?php
-
-                                    $sql = "SELECT * from products  where id='" . $_GET['id'] . "' ";
-                                    $query = mysqli_query($db, $sql);
-
-                                    if (mysqli_num_rows($query) > 0) {
-                                        while ($row1 = mysqli_fetch_assoc($query)) {
-                                    ?>
-                                            <div class="row gx-3 mb-3">
-                                                <!-- Form Group (first name)-->
-                                                <div class="col-md-6">
-                                                    <input type="hidden" name="id" id="id" value="<?= $_GET['id'] ?>">
-                                                    <label class="small mb-1" for="inputFullName">Product Name</label>
-                                                    <input class="form-control" id="inputFullName" type="text" placeholder="Name" value="<?php echo $row1['name']; ?>" />
-                                                </div>
-                                                <!-- Form Group (last name)-->
-                                                <div class="col-md-6">
-                                                    <label class="small mb-1" for="inputPrice">Price</label>
-                                                    <input class="form-control" id="inputPrice" type="integer" placeholder="Price" value="<?php echo $row1['price']; ?>" />
-                                                </div>
-                                            </div>
-                                            <!-- Form Row        -->
-                                            <div class="row gx-3 mb-3">
-                                                <!-- Form Group (organization name)-->
-
-                                                <!-- Form Group (location)-->
-                                                <div class="col-md-12">
-                                                    <label class="small mb-1" for="inputDescription">Description</label>
-                                                    <input class="form-control" id="inputDescription" type="text" placeholder="Description" value="<?php echo $row1['description']; ?>" />
-                                                </div>
-                                            </div>
-                                            <!-- Form Group (email address)-->
-
-                                            <!-- Form Row-->
-                                            <!-- categories -->
-                                            <div class="row gx-3 mb-3">
-                                                <div class="col-md-6">
-                                                    <label class="small mb-1" for="inputCategory">Category</label>
-                                                    <select class="form-control" id="inputCategory" name="inputCategory">
-                                                        <?php
-                                                        $sql = "SELECT * from categories";
-                                                        $query = mysqli_query($db, $sql);
-
-                                                        if (mysqli_num_rows($query) > 0) {
-                                                            while ($row = mysqli_fetch_assoc($query)) {
-                                                        ?>
-                                                                <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-                                                        <?php
-                                                            }
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                                <!-- <div class="col-md-6">
-                                                    <label class="small mb-1" for="inputImage">Image</label>
-                                                    <input class="form-control" id="inputImage" type="file" placeholder="Image" value="<?php echo $row1['image']; ?>" />
-                                                </div> -->
-                                            </div>
-                                            <div class="row gx-3 mb-3">
-                                                <!-- join request -->
-                                                <!-- Save changes button-->
-                                                <button onclick="updateProduct();" class="btn btn-primary mt-2" type="button">Save changes</button>
-                                            </div>
-
-                                    <?php
-                                        }
-                                    }
-                                    ?>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-        <?php
-        include 'footer.php';
-        ?>
-    </div>
+			<?php
+			while ($row = mysqli_fetch_assoc(
+				$result
+			)) {
+			?>
+				<li><a class="categoryLink" href="index.php?category_id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></li>
+			<?php
+			}
+			?>
 
 
 
 
+		</ul>
+	</nav>
+	<img src="banners/1.jpg" alt="Banner" />
+
+	<main>
+			<!-- Product Detail -->
+		<h1 id="productDetail">Product Page</h1>
+		<!-- get product -->
+		<?php
+		$query = "SELECT * FROM products WHERE id = " . $_GET['id'];
+		$result =
+			mysqli_query($db, $query);
+		$product = mysqli_fetch_assoc($result);
+
+		
+		?>
+		
+			
+
+		
+		<!-- display product details -->
+
+		<article class="product" >
+
+			<img src="product.png" alt="product name">
+			<section class="details">
+				<h2><?php echo $product['name']?></h2>
+				<h3><?php echo getCategoryName($product['category_id'])?></h3>
+				<!-- show auction if auction has product -->
+				<?php
+				$query = "SELECT * FROM auctions WHERE product_id = " . $product['id'];
+				$result = mysqli_query($db, $query);
+				$auction = mysqli_fetch_assoc($result);
+				?>
+				<!--check if auction  -->
+				<?php if ($auction) { ?>
+					<p>Auction created by <a href="#"><?php echo getUserName($auction['user_id'])?></a></p>
+				<p class="price">Current bid:<?php echo $auction['price']?></p>
+				<time>Time left: 8 hours 3 minutes</time>
+				<!-- place bid -->
+				<form action="placeBid.php" method="post">
+					<input type="hidden" name="id" value="<?php echo $product['id']?>">
+					<input type="hidden" name="auction_id" value="<?php echo $auction['id']?>">
+					<input type="hidden" name="product_id" value="<?php echo $product['id']?>">
+					<input type="number" name="price" placeholder="Enter your bid">
+					<input type="submit" name="submit" value="Place Bid">
+				</form>
 
 
+				<!-- <form class="bid">
+					<input type="text" name="bid" placeholder="Enter bid amount" />
+					<input type="submit" value="Place bid" />
+			
+				
+				</form>  -->
+				<?php }
+				// else no products
+				else { ?>
+				<!-- heading with text color red -->
+				<h2 style="color:red">No auction for this product</h2>
+				<?php } ?>
+
+
+			
+			</section>
+			<section class="description">
+				<p>
+					<?php echo $product['description']?>
+				</p>
+
+			</section>
+
+			<section class="reviews">
+				<h2>Reviews of User.Name </h2>
+				<ul>
+					<li><strong>Ali said </strong> great ibuyer! Product as advertised and delivery was quick <em>29/09/2019</em></li>
+					<li><strong>Dave said </strong> disappointing, product was slightly damaged and arrived slowly.<em>22/07/2019</em></li>
+					<li><strong>Susan said </strong> great value but the delivery was slow <em>22/07/2019</em></li>
+
+				</ul>
+
+				<form>
+					<label>Add your review</label> <textarea name="reviewtext"></textarea>
+
+					<input type="submit" name="submit" value="Add Review" />
+				</form>
+			</section>
+		</article>
+
+		<!-- <hr />
+		<h1>Sample Form</h1>
+
+		<form action="#">
+			<label>Text box</label> <input type="text" />
+			<label>Another Text box</label> <input type="text" />
+			<input type="checkbox" /> <label>Checkbox</label>
+			<input type="radio" /> <label>Radio</label>
+			<input type="submit" value="Submit" />
+
+		</form> -->
+
+
+
+
+
+		<footer>
+			&copy; ibuy 2019
+		</footer>
+	</main>
 </body>
 
 </html>
-<script>
-    function updateProduct(){
-        var id = document.getElementById('id').value;
-        var name = document.getElementById('inputFullName').value;
-        var price = document.getElementById('inputPrice').value;
-        var description = document.getElementById('inputDescription').value;
-        var category = document.getElementById('inputCategory').value;
-        // var image = document.getElementById('inputImage').value;
-        $.ajax({
-            url: 'updateProduct.php',
-            type: 'POST',
-            data: {
-                id: id,
-                name: name,
-                price: price,
-                description: description,
-                category: category,
-                // image: image
-            },
-            success: function(data) {
-                if (data == "success") {
-                    alert("Product Updated Successfully");
-                    window.location.href = "productList.php";
-                } else {
-                    alert("Product Not Updated");
-                }
-            }
-        });
-    }
- 
-</script>

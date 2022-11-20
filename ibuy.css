@@ -103,6 +103,7 @@ body > nav ul li a {
 .productList img {width: auto; display: block; max-width: 10vw;}
 
 p.price {display: block; text-align: right; font-weight: bold; font-size: 2em;}
+p.time {display: block; text-align: right; font-weight: bold; font-size: 1em;}
 a.more {display: block; text-align: right; font-weight: bold; float: right; background-color: #3665f3;
 	color: white;
 
