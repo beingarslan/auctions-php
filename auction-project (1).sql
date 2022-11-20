@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2022 at 09:07 PM
+-- Generation Time: Nov 20, 2022 at 10:50 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -43,7 +43,7 @@ CREATE TABLE `auctions` (
 --
 
 INSERT INTO `auctions` (`id`, `name`, `product_id`, `user_id`, `price`, `start_time`, `end_time`, `updated_at`) VALUES
-(1, 'Peter Herring', 2, 1, 448, '2022-11-20 19:06:33', '2016-04-21 17:29:00', NULL);
+(1, 'Peter Herring', 2, 1, 501, '2022-11-20 21:09:01', '2016-04-21 17:29:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -82,6 +82,7 @@ CREATE TABLE `products` (
   `price` int(11) NOT NULL,
   `category_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL DEFAULT 1,
+  `is_auction` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -90,9 +91,9 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `category_id`, `user_id`, `created_at`, `updated_at`) VALUES
-(2, 'Hedwig Kramer', 'Sunt eiusmod volupta', 400, 6, 1, '2022-11-20 12:13:02', '2022-11-20 08:13:02'),
-(5, 'Todd Talley', 'Est corporis nesciun', 773, 5, 1, '2022-11-20 19:37:53', NULL);
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `category_id`, `user_id`, `is_auction`, `created_at`, `updated_at`) VALUES
+(2, 'Hedwig Kramer', 'Sunt eiusmod volupta', 400, 6, 1, 1, '2022-11-20 20:34:21', '2022-11-20 08:13:02'),
+(5, 'Todd Talley', 'Est corporis nesciun', 773, 5, 1, 0, '2022-11-20 19:37:53', NULL);
 
 -- --------------------------------------------------------
 
